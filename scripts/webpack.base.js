@@ -4,21 +4,27 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const pkg = require('../package')
 
+const moduleBlackList = []
+
 module.exports = {
   entry: {
-    client: './src/index.js',
+    client: ['./src/index.js'],
     vendor: Object.keys(pkg.dependencies).filter(name => {
-      // update the code if you want to
-      // remove some dependencies you don't need in the vendor bundle
-      return true
+      return moduleBlackList.indexOf(name) === -1
     })
   },
   output: {
     path: path.join(__dirname, '../app/dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    publicPath: '/dist/'
   },
   resolve: {
-    extensions: ['', '.vue', '.css', '.js', '.json']
+    extensions: ['', '.vue', '.css', '.js', '.json'],
+    alias: {
+      src: path.join(__dirname, '../src'),
+      components: path.join(__dirname, '../src/components'),
+      svg: path.join(__dirname, '../src/svg')
+    }
   },
   module: {
     loaders: [
@@ -34,6 +40,10 @@ module.exports = {
       {
         test: /\.json$/,
         loaders: ['json']
+      },
+      {
+        test: /\.svg$/,
+        loaders: ['svg-inline']
       }
     ]
   },
@@ -50,7 +60,10 @@ module.exports = {
         loader: 'css-loader',
         fallbackLoader: 'vue-style-loader'
       })
-    }
+    },
+    postcss: [
+      require('precss')
+    ]
   },
   plugins: [
     new ExtractTextPlugin('styles.css'),

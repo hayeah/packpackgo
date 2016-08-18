@@ -1,0 +1,1 @@
+export const projects = state => state.project.projects
