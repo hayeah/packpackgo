@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "app": "NODE_ENV=development electron app",
     "watch": "webpack --progress --config ./scripts/webpack.dev.js --watch",
-    "build": "webpack --progress --config ./scripts/webpack.prod.js"
+    "build": "webpack --progress --config ./scripts/webpack.prod.js",
+    "svg": "rm -rf src/svg && font-awesome-svg-png --no-png --color \"#222\" && mv \"#222/svg\" src/svg && rm -rf \"#222\""
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
   },
   "dependencies": {
     "ansi-to-html": "^0.4.1",
+    "font-awesome-svg-png": "^1.1.5",
     "vue": "^2.0.0-rc.1",
     "vue-router": "^2.0.0-rc.3",
     "vuex": "^2.0.0-rc.4",
