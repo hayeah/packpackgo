@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const WebpackNotifierPlugin = require('webpack-notifier')
 const pkg = require('../package')
 
 const moduleBlackList = []
@@ -23,7 +23,8 @@ module.exports = {
     alias: {
       src: path.join(__dirname, '../src'),
       components: path.join(__dirname, '../src/components'),
-      svg: path.join(__dirname, '../src/svg')
+      svg: path.join(__dirname, '../src/svg'),
+      utils: path.join(__dirname, '../src/utils')
     }
   },
   module: {
@@ -50,30 +51,37 @@ module.exports = {
   babel: {
     babelrc: false,
     presets: [
-      ['es2015', {modules: false}]
+      'es2015'
       , 'stage-1'
     ]
   },
   vue: {
-    loaders: {
-      css: ExtractTextPlugin.extract({
-        loader: 'css-loader',
-        fallbackLoader: 'vue-style-loader'
-      })
-    },
-    postcss: [
-      require('precss')
-    ]
+    loaders: {},
+    postcss(webpack) {
+      return [
+        require('postcss-import')({
+          addDependencyTo: webpack
+        }),
+        require('postcss-nested'),
+        require('postcss-simple-vars')
+      ]
+    }
   },
   plugins: [
-    new ExtractTextPlugin('styles.css'),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.js'
     }),
     new webpack.ExternalsPlugin('commonjs2', [
-      'webpack'
-    ])
+      'webpack',
+      'webpack-dev-middleware',
+      'webpack-hot-middleware',
+      'express'
+    ]),
+    new WebpackNotifierPlugin({
+      title: pkg.name
+    })
   ],
   target: 'electron-renderer'
 }

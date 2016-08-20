@@ -5,7 +5,12 @@ const state = {
 
 const mutations = {
   ADD_PROJECT(state, project) {
-    state.projects.push(project)
+    const stored = state.projects.some(p => {
+      return p.path === project.path
+    })
+    if (!stored) {
+      state.projects.unshift(project)
+    }
   }
 }
 

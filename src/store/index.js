@@ -8,13 +8,22 @@ import * as actions from './actions'
 import app from './modules/app'
 import project from './modules/project'
 
+const plugins = []
+
+if (__DEV__) {
+  plugins.push(
+    require('vuex/logger')()
+  )
+}
+
 const store = new Vuex.Store({
   modules: {
     app,
     project
   },
   actions,
-  getters
+  getters,
+  plugins
 })
 
 if (__DEV__) {

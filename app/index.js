@@ -8,8 +8,8 @@ const windowManager = new WindowManager()
 
 const isDev = process.env.NODE_ENV === 'development'
 const url = isDev ?
-  `file://${path.join(__dirname, 'index.dev.html')}` :
-  `file://${path.join(__dirname, 'index.html')}`
+  `file://${path.join(__dirname, './index.dev.html')}` :
+  `file://${path.join(__dirname, './index.html')}`
 
 let mainWindow
 app.on('ready', () => {
