@@ -14,8 +14,9 @@ config.plugins.push(
     },
     comments: false
   }),
-  new ExtractTextPlugin('styles.css'),
+  new ExtractTextPlugin('styles.css')
 )
+
 config.vue.loaders.css = ExtractTextPlugin.extract('vue-style-loader', 'css-loader')
 
 module.exports = config

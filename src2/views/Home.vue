@@ -4,7 +4,7 @@
       <div class="card add-card">
         <div class="card-inner">
           <svg-icon class="card-title-icon" name="bolt"></svg-icon>
-          <div>Let there be light</div>
+          <div>Let there be light!</div>
           <div class="drop-zone">
             <svg-icon name="folderOpenO"></svg-icon>
             <div class="text-tip">
@@ -15,8 +15,8 @@
           <button @click="chooseFolder">Browser folders</button>
         </div>
       </div>
-      <div 
-        :class="['card', 'card-' + project.buildStatus]" 
+      <div
+        :class="['card', 'card-' + project.buildStatus]"
         v-for="project in projects">
         <div class="card-inner">
           <header class="card-header">
