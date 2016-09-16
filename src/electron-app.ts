@@ -35,6 +35,12 @@ function launch() {
 
 	mainWindow.loadURL(url);
 
+	if (isDev) {
+		mainWindow.webContents.openDevTools({
+			mode: "detach",
+		});
+	}
+
 	installDevtollExtensions();
 }
 
