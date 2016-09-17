@@ -61,13 +61,21 @@ reaction(
 	}
 );
 
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 function configureWebpack(projectDir: string) {
-	let progressPlugin = new ProgressPlugin((percentage: number, msg: string) => {
+
+	const progressPlugin = new ProgressPlugin((percentage: number, msg: string) => {
 		transaction(() => {
 			serverStore.buildStatus = "building";
 			serverStore.buildProgress = percentage;
 			serverStore.buildMessage = msg;
 		});
+	});
+
+	// TODO provide a default template if one is not included in project
+	const htmlPlugin = new HtmlWebpackPlugin({
+		template: path.join(projectDir, "index.html"),
 	});
 
 	const config = {
@@ -78,7 +86,7 @@ function configureWebpack(projectDir: string) {
 		output: {
 			path: path.join(projectDir, "build"),
 			filename: "[name].js",
-			publicPath: "/build/",
+			publicPath: "/",
 		},
 
 		resolve: {
@@ -107,16 +115,24 @@ function configureWebpack(projectDir: string) {
 			],
 		},
 
+		// devtool: "cheap-module-eval-source-map",
+		devtool: "source-map",
+
 		babel: {
 			babelrc: false,
+			plugins: [
+				"transform-es2015-modules-commonjs",
+			],
 			presets: [
-				"es2015",
+				"es2017",
 				"stage-1",
+				"react",
 			],
 		},
 
 		plugins: [
 			progressPlugin,
+			htmlPlugin,
 		],
 	};
 
@@ -129,12 +145,12 @@ function startWebpackServer(projectRoot: string) {
 
 	const serverOptions = {
 		contentBase: projectRoot,
-		publicPath: config.output.publicPath,
+		publicPath: "/",
 		// hot: true,
 		stats: "normal",
 	};
 
-	const server = new WebpackServer(compiler, serverOptions)
+	const server = new WebpackServer(compiler, serverOptions);
 
 	server.listen(PORT, (err: any) => {
 		if (err) {
