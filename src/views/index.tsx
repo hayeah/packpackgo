@@ -14,7 +14,6 @@ export function initApp() {
 
 	const PORT = 2000;
 	const serverStore = new ServerStore(PORT);
-	serverStore.start();
 
 	const uiStore = new UIStore();
 

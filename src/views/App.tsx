@@ -1,7 +1,7 @@
-import * as React from "react";
 import * as qfs from "q-io/fs";
 import * as path from "path";
 
+import * as React from "react";
 import {
 	observer,
 } from "mobx-react";
@@ -14,6 +14,8 @@ const ASSETS = {
 };
 
 const css = require("./App.less");
+
+import { Project } from "./Project";
 
 @observer(["serverStore", "uiStore"])
 export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore }, {}> {
@@ -41,12 +43,9 @@ export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: 
 					Drop Your Project Here
 				</div>
 
-				{isReady && <div>Server started: {serverURL} </div>}
-				{webpackServer && <div>Status: {buildStatus} {buildProgress} {buildMessage}</div>}
-				{projectRoot && <div>Project: {projectRoot}</div>}
-				{message && <div>Message: {message} </div>}
-
-				<DropZone />
+				<Project/>
+				<Project/>
+				<Project/>
 			</div>
 		);
 	}
