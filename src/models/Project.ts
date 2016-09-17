@@ -8,10 +8,15 @@ import {
 
 import * as path from "path";
 
-export class Project {
-	// projectRoot: string;
+import { startWebpackServer } from "../packer";
 
+export class Project {
 	@observable status: "success" | "error" | "building" | "stopped" = "stopped";
+	@observable progress: number = 0;
+	@observable message: string = "";
+	@observable port: number | null;
+
+	private webpackServer: any;
 
 	constructor(public root: string) {
 	}
@@ -33,15 +38,44 @@ export class Project {
 	}
 
 	start() {
-		this.status = "success";
+		if (this.webpackServer) {
+			return;
+		}
+
+		const port = 2000;
+
+		const server = startWebpackServer(this, port, (err: any) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			this.port = 2000;
+			this.webpackServer = server;
+			// this.isReady = true;
+		});
 	}
 
 	stop() {
+		if (this.webpackServer) {
+			this.webpackServer.close();
+			this.webpackServer = null;
+			this.port = null;
+		}
 		this.status = "stopped";
 	}
 
-	remove() {
+	@action updateProgress(percentage: number, msg: string) {
+		if (percentage === 1) {
+			// TODO error handling??
+			this.status = "success";
+		} else {
+			this.status = "building";
+		}
 
+		this.progress = percentage;
+		this.message = msg;
 	}
+
 
 }

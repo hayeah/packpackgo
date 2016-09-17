@@ -3,25 +3,25 @@ import * as path from "path";
 const ProgressPlugin = require("webpack/lib/ProgressPlugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-import { ServerStore } from "../stores/ServerStore";
+import { Project } from "../models/Project";
 
-export function configureWebpack(serverStore: ServerStore) {
-	const { projectRoot } = serverStore;
+export function configureWebpack(project: Project) {
+	const { root } = project;
 
-	const progressPlugin = new ProgressPlugin(serverStore.updateProgress.bind(serverStore));
+	const progressPlugin = new ProgressPlugin(project.updateProgress.bind(project));
 
 	// TODO provide a default template if one is not included in project
 	const htmlPlugin = new HtmlWebpackPlugin({
-		template: path.join(projectRoot, "index.html"),
+		template: path.join(root, "index.html"),
 	});
 
 	const config = {
 		entry: {
-			index: path.join(projectRoot, "index.js"),
+			index: path.join(root, "index.js"),
 		},
 
 		output: {
-			path: path.join(projectRoot, "build"),
+			path: path.join(root, "build"),
 			filename: "[name].js",
 			publicPath: "/",
 		},

@@ -6,16 +6,16 @@ import {
 const webpack = require("webpack");
 const WebpackServer = require("webpack-dev-server");
 
-import { ServerStore } from "../stores/ServerStore";
+import { Project } from "../models/Project";
 import { configureWebpack } from "./config";
 
-export function startWebpackServer(serverStore: ServerStore, port: number, callback: Function) {
-	const { projectRoot } = serverStore;
-	const config = configureWebpack(serverStore);
+export function startWebpackServer(project: Project, port: number, callback: Function) {
+	const { root } = project;
+	const config = configureWebpack(project);
 	const compiler = webpack(config);
 
 	const serverOptions = {
-		contentBase: projectRoot,
+		contentBase: root,
 		publicPath: "/",
 		// hot: true,
 		stats: "normal",
