@@ -1,3 +1,7 @@
+import {
+	shell,
+} from "electron";
+
 import * as React from "react";
 
 import {
@@ -13,10 +17,6 @@ import {
 } from "../stores/AppStore";
 
 const css = require("./Project.less");
-
-const ICONS = {
-	play: require("../assets/play.svg"),
-};
 
 const classNames = require("classNames");
 
@@ -34,6 +34,12 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 		this.props.appStore!.removeProject(this.props.project);
 	}
 
+	handleOpenProject = () => {
+		const { root } = this.props.project;
+
+		shell.openExternal(`file://${root}`);
+	}
+
 	render() {
 		const {
 			status,
@@ -42,13 +48,13 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 		} = this.props.project!;
 
 		let primaryAction: any;
-		if (status == "success") {
+		if (Object.is(status, "success")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handleStop}>
 					<span className={classNames(css.action__icon, "fa", "fa-pause")} />
 				</a>
 			);
-		} else if (status == "stopped") {
+		} else if (Object.is(status, "stopped")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handlePlay}>
 					<span className={classNames(css.action__icon, "fa", "fa-play")} />
@@ -58,7 +64,9 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 
 		return (
 			<div className={classNames(css.root, css[`root--${status}`])}>
-				<span className={css.timeAgo}> {prettyRoot} </span>
+				<a onClick={this.handleOpenProject}>
+					<span className={css.timeAgo}> {prettyRoot} </span>
+				</a>
 				<h1 className={css.title}> {name} </h1>
 				<div className={css.tools}>
 					<div className={css.tools__item}>
