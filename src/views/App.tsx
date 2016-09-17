@@ -9,6 +9,12 @@ import {
 import { ServerStore } from "../stores/ServerStore";
 import { UIStore } from "../stores/UIStore";
 
+const ASSETS = {
+	logo: require("../assets/logo.png"),
+};
+
+const css = require("./App.less");
+
 @observer(["serverStore", "uiStore"])
 export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore }, {}> {
 	render() {
@@ -27,6 +33,7 @@ export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: 
 		return (
 			<div>
 				<h1> PackPackGo </h1>
+				<img className={css.logo} src={ASSETS.logo}/>
 				{isReady && <div>Server started: {serverURL} </div>}
 				{webpackServer && <div>Status: {buildStatus} {buildProgress} {buildMessage}</div>}
 				{projectRoot && <div>Project: {projectRoot}</div>}
