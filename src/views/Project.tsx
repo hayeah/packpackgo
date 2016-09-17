@@ -12,8 +12,11 @@ import {
 // import { UIStore } from "../stores/UIStore";
 
 import {
-	AppStore,
 	Project as ProjectData,
+} from "../models/Project";
+
+import {
+	AppStore,
 } from "../stores/AppStore";
 
 const css = require("./Project.less");
