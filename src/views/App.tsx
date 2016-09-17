@@ -31,9 +31,16 @@ export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: 
 
 		const serverURL = `http://localhost:${port}`;
 		return (
-			<div>
-				<h1> PackPackGo </h1>
-				<img className={css.logo} src={ASSETS.logo}/>
+			<div className={css.root}>
+				<div className={css.header}>
+					<img className={css.header__logo} src={ASSETS.logo}/>
+					<h1 className={css.header__title}> PackPackGo </h1>
+				</div>
+
+				<div className={css.dropZoneHint}>
+					Drop Your Project Here
+				</div>
+
 				{isReady && <div>Server started: {serverURL} </div>}
 				{webpackServer && <div>Status: {buildStatus} {buildProgress} {buildMessage}</div>}
 				{projectRoot && <div>Project: {projectRoot}</div>}

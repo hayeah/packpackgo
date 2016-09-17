@@ -1,5 +1,44 @@
 :local {
-	.logo {
+	.root {
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.header {
+		flex-direction: row;
+		height: 80px;
+		align-items: center;
+		justify-content: center;
+		border-bottom: 1px solid #F0F0F0;
+
+	}
+
+	.header__title {
+		font-weight: 700;
+		font-size: 32px;
+	}
+
+	.header__logo {
+		position: absolute;
+		left: 10px;
 		width: 50px;
+		height: 50px;
+	}
+
+	.dropZoneHint {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		align-items: center;
+		justify-content: center;
+
+		height: 200px;
+
+		background: #FAFAFA;
+
+		font-size: 24px;
+		font-weight: 100;
 	}
 }
