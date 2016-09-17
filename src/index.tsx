@@ -18,14 +18,16 @@ import * as React from "react";
 import { render } from "react-dom";
 
 const webpack = require("webpack");
+const WebpackServer = require("webpack-dev-server");
 
 class ServerStore {
 	@observable isReady = false;
 	@observable port: number;
 	@observable counter: number = 0;
-	@observable projectDir: string;
+	@observable projectRoot: string;
 
-	@observable webpackWatcher: any;
+	// @observable webpackWatcher: any;
+	@observable webpackServer: any;
 
 	@observable buildProgress: number = 0;
 	@observable buildMessage: string = "";
@@ -46,21 +48,20 @@ const ProgressPlugin = require("webpack/lib/ProgressPlugin");
 
 // Change webpack builder
 reaction(
-	() => serverStore.projectDir,
-	projectDir => {
-		console.log("webpack project", projectDir);
+	() => serverStore.projectRoot,
+	projectRoot => {
+		console.log("webpack project", projectRoot);
 
 		// close down previous webpack watcher
-		if (serverStore.webpackWatcher) {
-			serverStore.webpackWatcher.close();
+		if (serverStore.webpackServer) {
+			serverStore.webpackServer.close();
 		}
 
-		serverStore.webpackWatcher = watchProject(projectDir);
+		serverStore.webpackServer = startWebpackServer(projectRoot);
 	}
 );
 
-function watchProject(projectDir: string) {
-	// const compiler = webpack(configs);
+function configureWebpack(projectDir: string) {
 	let progressPlugin = new ProgressPlugin((percentage: number, msg: string) => {
 		transaction(() => {
 			serverStore.buildStatus = "building";
@@ -69,7 +70,7 @@ function watchProject(projectDir: string) {
 		});
 	});
 
-	const compiler = webpack({
+	const config = {
 		entry: {
 			index: path.join(projectDir, "index.js"),
 		},
@@ -117,7 +118,41 @@ function watchProject(projectDir: string) {
 		plugins: [
 			progressPlugin,
 		],
+	};
+
+	return config;
+}
+
+function startWebpackServer(projectRoot: string) {
+	const config = configureWebpack(projectRoot);
+	const compiler = webpack(config);
+
+	const serverOptions = {
+		contentBase: projectRoot,
+		publicPath: config.output.publicPath,
+		// hot: true,
+		stats: "normal",
+	};
+
+	const server = new WebpackServer(compiler, serverOptions)
+
+	server.listen(PORT, (err: any) => {
+		if (err) {
+			console.error(err);
+			process.exit(1);
+		}
+
+		transaction(() => {
+			serverStore.isReady = true;
+			serverStore.port = PORT;
+		});
 	});
+
+	return server;
+}
+
+function watchProject(config: any) {
+	const compiler = webpack(config);
 
 	const watcher = compiler.watch({
 		aggregateTimeout: 0,
@@ -132,15 +167,15 @@ function watchProject(projectDir: string) {
 	return watcher;
 }
 
-app.listen(PORT, () => {
-	serverStore.isReady = true;
-	serverStore.port = PORT;
-});
+// app.listen(PORT, () => {
+// 	serverStore.isReady = true;
+// 	serverStore.port = PORT;
+// });
 
-app.get("/", (req, res) => {
-	serverStore.counter++;
-	res.end(`served ${serverStore.counter}`);
-});
+// app.get("/", (req, res) => {
+// 	serverStore.counter++;
+// 	res.end(`served ${serverStore.counter}`);
+// });
 
 window.addEventListener("load", main);
 
@@ -169,22 +204,24 @@ class App extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore
 	render() {
 		const {
 			isReady, port, counter,
-			projectDir,
+			projectRoot,
 
-			webpackWatcher,
+			webpackServer,
 			buildMessage,
 			buildProgress,
 			buildStatus,
 		} = this.props.serverStore!;
 		const { message } = this.props.uiStore!;
+
+		const serverURL = `http://localhost:${port}`;
 		return (
 			<div>
 				<h1> PackPackGo </h1>
-				{isReady && <div>Server listening on {port} </div>}
-				<div>Requests served: {counter}</div>
-				{projectDir && <div>Project: {projectDir}</div>}
+				{isReady && <div>Server started: {serverURL} </div>}
+				{webpackServer && <div>Status: {buildStatus} {buildProgress} {buildMessage}</div>}
+				{projectRoot && <div>Project: {projectRoot}</div>}
 				{message && <div>Message: {message} </div>}
-				{webpackWatcher && <div>{buildStatus} {buildProgress} {buildMessage}</div>}
+
 				<DropZone />
 			</div>
 		);
@@ -206,18 +243,18 @@ class DropZone extends React.Component<{ uiStore?: UIStore }, {}> {
 			return;
 		}
 
-		const projectDir = files[0].path;
-		if (!await qfs.isDirectory(projectDir)) {
+		const projectRoot = files[0].path;
+		if (!await qfs.isDirectory(projectRoot)) {
 			this.props.uiStore!.message = "Please drop a project folder";
 			return;
 		}
 
-		if (!await qfs.isFile(path.join(projectDir, "index.js"))) {
+		if (!await qfs.isFile(path.join(projectRoot, "index.js"))) {
 			this.props.uiStore!.message = "Cannot find index.js in dropped folder";
 			return;
 		}
 
-		serverStore.projectDir = projectDir;
+		serverStore.projectRoot = projectRoot;
 
 		return false;
 	}
