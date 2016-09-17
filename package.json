@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "quickpack build src/index@node src/launchApp@node -w",
     "ts-build": "tsc --outDir build",
     "ts-watch": "tsc --outDir build -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "app": "NODE_ENV=development electron app",
-    "dev": "node scripts/server.js",
     "watch": "webpack --config ./scripts/webpack.dev.js --watch",
     "build": "webpack --progress --config ./scripts/webpack.prod.js",
     "svg": "rm -rf src/svg && font-awesome-svg-png --no-png --color \"#222\" && mv \"#222/svg\" src/svg && rm -rf \"#222\""

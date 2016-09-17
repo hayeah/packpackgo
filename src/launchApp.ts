@@ -7,42 +7,46 @@ import * as path from "path";
 
 const isDev = process.env.NODE_ENV === "development";
 
-const url = isDev ?
-	`file://${path.join(__dirname, "../index.dev.html")}` :
-	`file://${path.join(__dirname, "../index.html")}`;
 
-let mainWindow: Electron.BrowserWindow;
+export function launchApp(url: string) {
+	let mainWindow: Electron.BrowserWindow;
 
-app.on("ready", launch);
-app.on("activate", launch);
+	app.on("ready", launch);
+	app.on("activate", launch);
 
-app.on("window-all-closed", function () {
-	if (process.platform !== "darwin") {
-		app.quit();
-	}
-});
-
-function launch() {
-	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
+	app.on("window-all-closed", function () {
+		if (process.platform !== "darwin") {
+			app.quit();
+		}
 	});
 
-	mainWindow.on("closed", () => {
-		// release memory
-		mainWindow = undefined as any;
-	});
-
-	mainWindow.loadURL(url);
-
-	if (isDev) {
-		mainWindow.webContents.openDevTools({
-			mode: "detach",
+	function launch() {
+		mainWindow = new BrowserWindow({
+			width: 460,
+			height: 720,
 		});
-	}
 
-	installDevtollExtensions();
+		mainWindow.on("closed", () => {
+			// release memory
+			mainWindow = undefined as any;
+		});
+
+		mainWindow.loadURL(url);
+
+		if (isDev) {
+			mainWindow.webContents.openDevTools({
+				mode: "detach",
+			});
+		}
+
+		installDevtollExtensions();
+	}
 }
+
+
+
+
+
 
 async function installDevtollExtensions() {
 	// https://www.npmjs.com/package/electron-devtools-installer
