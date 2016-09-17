@@ -6,7 +6,7 @@ import {
 	observer,
 } from "mobx-react";
 
-import { ServerStore } from "../stores/ServerStore";
+import { AppStore } from "../stores/AppStore";
 import { UIStore } from "../stores/UIStore";
 
 const ASSETS = {
@@ -17,21 +17,15 @@ const css = require("./App.less");
 
 import { Project } from "./Project";
 
-@observer(["serverStore", "uiStore"])
-export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore }, {}> {
+@observer(["appStore"])
+export class App extends React.Component<{ appStore?: AppStore, uiStore?: UIStore }, {}> {
 	render() {
 		const {
-			isReady, port, counter,
-			projectRoot,
+			projects,
+		} = this.props.appStore!;
 
-			webpackServer,
-			buildMessage,
-			buildProgress,
-			buildStatus,
-		} = this.props.serverStore!;
-		const { message } = this.props.uiStore!;
+		// const serverURL = `http://localhost:${port}`;
 
-		const serverURL = `http://localhost:${port}`;
 		return (
 			<div className={css.root}>
 				<div className={css.header}>
@@ -39,20 +33,16 @@ export class App extends React.Component<{ serverStore?: ServerStore, uiStore?: 
 					<h1 className={css.header__title}> PackPackGo </h1>
 				</div>
 
-				<div className={css.dropZoneHint}>
-					Drop Your Project Here
-				</div>
+				<DropZone/>
 
-				<Project/>
-				<Project/>
-				<Project/>
+				{projects.map(project => <Project key={project.root} project={project}/>)}
 			</div>
 		);
 	}
 }
 
-@observer(["serverStore", "uiStore"])
-class DropZone extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore }, {}> {
+@observer(["appStore", "uiStore"])
+class DropZone extends React.Component<{ appStore?: AppStore, uiStore?: UIStore }, {}> {
 
 	onDrop = async (e: React.DragEvent) => {
 		e.preventDefault();
@@ -76,17 +66,15 @@ class DropZone extends React.Component<{ serverStore?: ServerStore, uiStore?: UI
 			return;
 		}
 
-		this.props.serverStore!.projectRoot = projectRoot;
+		this.props.appStore!.addProject(projectRoot);
 
 		return false;
 	}
 
 	render() {
 		return (
-			<div onDrop={this.onDrop} className="drop-zone">
-				<div className="drop-zone__text-tip">
-					Drag &amp; drop a folder here to start!
-				</div>
+			<div onDrop={this.onDrop} className={css.dropZoneHint}>
+				Drop Your Project Here
 			</div>
 		);
 	}

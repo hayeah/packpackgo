@@ -7,13 +7,15 @@ import {
 
 import { App } from "./App";
 
-import { ServerStore } from "../stores/ServerStore";
+import { AppStore } from "../stores/AppStore";
+// import { ProjectStore } from "../stores/ProjectStore";
 import { UIStore } from "../stores/UIStore";
 
 export function initApp() {
 
 	const PORT = 2000;
-	const serverStore = new ServerStore(PORT);
+	// const serverStore = new ProjectStore(PORT);
+	const appStore = new AppStore();
 
 	const uiStore = new UIStore();
 
@@ -29,7 +31,7 @@ export function initApp() {
 	}, false);
 
 	render(
-		<Provider uiStore={uiStore} serverStore={serverStore}>
+		<Provider uiStore={uiStore} appStore={appStore}>
 			<App />
 		</Provider>,
 		document.querySelector("#app"));

@@ -4,8 +4,13 @@ import {
 	observer,
 } from "mobx-react";
 
-import { ServerStore } from "../stores/ServerStore";
-import { UIStore } from "../stores/UIStore";
+// import { ProjectStore } from "../stores/ProjectStore";
+// import { UIStore } from "../stores/UIStore";
+
+import {
+	AppStore,
+	Project as ProjectData,
+} from "../stores/AppStore";
 
 const css = require("./Project.less");
 
@@ -15,26 +20,32 @@ const ICONS = {
 
 const classNames = require("classNames");
 
-@observer(["serverStore", "uiStore"])
-export class Project extends React.Component<{ serverStore?: ServerStore, uiStore?: UIStore }, {}> {
+@observer(["appStore"])
+export class Project extends React.Component<{ appStore?: AppStore, project: ProjectData }, {}> {
 	handlePlay = () => {
-		this.props.serverStore!.start();
+		this.props.project.start();
 	}
 
 	handleStop = () => {
-		this.props.serverStore!.stop();
+		this.props.project.stop();
+	}
+
+	handleRemove = () => {
+		this.props.appStore!.removeProject(this.props.project);
 	}
 
 	render() {
 		const {
 			status,
-		} = this.props.serverStore!;
+			prettyRoot,
+			name,
+		} = this.props.project!;
 
 		let primaryAction: any;
 		if (status == "success") {
 			primaryAction = (
 				<a className={css.action} onClick={this.handleStop}>
-					<span className={classNames(css.action__icon, "fa", "fa-stop")} />
+					<span className={classNames(css.action__icon, "fa", "fa-pause")} />
 				</a>
 			);
 		} else if (status == "stopped") {
@@ -47,17 +58,12 @@ export class Project extends React.Component<{ serverStore?: ServerStore, uiStor
 
 		return (
 			<div className={classNames(css.root, css[`root--${status}`])}>
-				<span className={css.timeAgo}> 20 seconds ago </span>
-				<h1 className={css.title}> TodoApp </h1>
+				<span className={css.timeAgo}> {prettyRoot} </span>
+				<h1 className={css.title}> {name} </h1>
 				<div className={css.tools}>
 					<div className={css.tools__item}>
-						<span className={classNames(css.tools__item__icon, "fa", "fa-link")} />
-						<a href="/">Preview</a>
-					</div>
-
-					<div className={css.tools__item}>
-						<span className={classNames(css.tools__item__icon, "fa", "fa-gift")} />
-						<a href="/">Bundle</a>
+						<span className={classNames(css.tools__item__icon, "fa", "fa-trash-o")} />
+						<a onClick={this.handleRemove}>Remove</a>
 					</div>
 				</div>
 
@@ -68,3 +74,4 @@ export class Project extends React.Component<{ serverStore?: ServerStore, uiStor
 		);
 	}
 }
+

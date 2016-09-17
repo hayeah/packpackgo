@@ -7,10 +7,8 @@ import {
 
 import { startWebpackServer } from "../packer";
 
-export class ServerStore {
-	@observable isReady = false;
+export class ProjectStore {
 	@observable port: number;
-	@observable counter: number = 0;
 	@observable projectRoot: string;
 
 	// @observable webpackWatcher: any;
@@ -31,6 +29,10 @@ export class ServerStore {
 
 	stop() {
 		this.status = "stopped";
+	}
+
+	remove() {
+
 	}
 
 	// start() {
