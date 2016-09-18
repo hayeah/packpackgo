@@ -18,6 +18,8 @@ export class Project {
 	@observable message: string = "";
 	@observable port: number | null;
 
+	errors: IBuildError[] = [];
+
 	private webpackServer: any;
 
 	constructor(public root: string) {
@@ -71,7 +73,8 @@ export class Project {
 	@action updateProgress(percentage: number, msg: string) {
 		if (percentage === 1) {
 			// TODO error handling??
-			this.status = "success";
+			// HY: Does this get call before or after the webpack done callback?
+			// this.status = "success";
 		} else {
 			this.status = "building";
 		}
@@ -80,5 +83,46 @@ export class Project {
 		this.message = msg;
 	}
 
+	/**
+	 * Callback when Webpack finishes building.
+	 */
+	@action reportDone(stats: IStat) {
+		if (stats.hasErrors()) {
+			this.reportErrors(stats);
+		} else {
+			this.status = "success";
+		}
+	}
 
+	@action reportErrors(stats: IStat) {
+		this.status = "error";
+		this.errors = stats.compilation.errors;
+	}
+}
+
+interface IStat {
+	hash: string;
+	starTime: number;
+	endTime: number;
+	compilation: ICompilation;
+
+	hasWarnings(): boolean;
+	hasErrors(): boolean;
+}
+
+interface ICompilation {
+	errors: IBuildError[];
+	dependencies: IDependency[];
+}
+
+interface IBuildError {
+	name: string;
+	message: string;
+	details: string;
+}
+
+interface IDependency {
+	module: any;
+	userRequest: string;
+	request: string;
 }

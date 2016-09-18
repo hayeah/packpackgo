@@ -61,10 +61,11 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 			name,
 			message,
 			progress,
+			errors,
 		} = this.props.project!;
 
 		let primaryAction: any;
-		if (Object.is(status, "success") || Object.is(status, "building")) {
+		if (Object.is(status, "success") || Object.is(status, "building") || Object.is(status, "error")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handleStop}>
 					<span className={classNames(css.action__icon, "fa", "fa-pause")} />
@@ -78,15 +79,6 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 			);
 		}
 
-		// let tools: any;
-		// switch (status) {
-		// 	case "building":
-		// 		tools = (
-
-		// 		);
-		// 		break;
-		// }
-
 		return (
 			<div className={classNames(css.root, css[`root--${status}`])}>
 				<a onClick={this.handleOpenProject}>
@@ -95,7 +87,12 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 				<h1 className={css.title}> {name} </h1>
 
 				<div className={css.tools}>
-					{ Object.is(status, "building") && `${message}`}
+					{
+						Object.is(status, "building") &&
+						<div className={css.tools__item}>
+							{message}
+						</div>
+					}
 
 					{
 						Object.is(status, "stopped") &&
@@ -120,6 +117,25 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 							<a onClick={this.handleBundle}>Bundle</a>
 						</div>
 					}
+
+					{
+						Object.is(status, "error") &&
+						<div className={css.tools__item}>
+							<span className={classNames(css.tools__item__icon, "fa", "fa-exclamation-triangle")} />
+							<a onClick={this.handleBundle}>Errors ({errors.length})</a>
+						</div>
+					}
+
+					{/* there is currently no way to trigger rebuild
+						{
+						Object.is(status, "error") &&
+						<div className={css.tools__item}>
+							<span className={classNames(css.tools__item__icon, "fa", "fa-wrench")} />
+							<a onClick={this.handleBundle}>Rebuild</a>
+						</div>
+						}
+					*/}
+
 
 				</div>
 
