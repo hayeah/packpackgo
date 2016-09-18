@@ -42,7 +42,7 @@ export class Project extends React.Component<{
 		// TODO dispose reaction
 		// Display or hide error messages automatically
 		reaction(
-			() => this.props.project.errors.length,
+			() => this.props.project.errors,
 			_ => {
 				const errors = this.props.project.errors;
 				if (errors.length === 0) {
@@ -82,8 +82,13 @@ export class Project extends React.Component<{
 	}
 
 	handleBundle = async () => {
-		const stat = await this.props.project.bundle();
-		if (stat.hasErrors()) {
+		// Bundle is special in that it doesn't change the status of the project. It may display errors, but keeping the project at the same state as before.
+		const stats = await this.props.project.bundle();
+		// this.props.project.reportDone(stats);
+		if (stats.hasErrors()) {
+			// This would display the error in modal without changing the status of the project.
+			this.props.project.errors = stats.compilation.errors;
+
 			this.props.uiStore!.setFlashMessage("Project bundling failed");
 		} else {
 			this.props.uiStore!.setFlashMessage("Project bundle was created");
