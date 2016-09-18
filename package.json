@@ -53,6 +53,7 @@
     "babel-preset-es2017": "^6.14.0",
     "babel-preset-react": "^6.11.1",
     "classnames": "^2.2.5",
+    "detect-port": "^1.0.0",
     "font-awesome": "^4.6.3",
     "mobx": "^2.5.1",
     "mobx-react": "^3.5.6",

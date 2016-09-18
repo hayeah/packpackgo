@@ -10,6 +10,8 @@ import * as path from "path";
 
 import { startWebpackServer } from "../packer";
 
+const detectPort = require("detect-port");
+
 export class Project {
 	@observable status: "success" | "error" | "building" | "stopped" = "stopped";
 	@observable progress: number = 0;
@@ -37,12 +39,13 @@ export class Project {
 		return this.root.replace(re, "~");
 	}
 
-	start() {
+	async start() {
 		if (this.webpackServer) {
 			return;
 		}
 
-		const port = 2000;
+		const startingPort = 5000;
+		const port = await detectPort(startingPort);
 
 		const server = startWebpackServer(this, port, (err: any) => {
 			if (err) {
@@ -50,7 +53,7 @@ export class Project {
 				return;
 			}
 
-			this.port = 2000;
+			this.port = port;
 			this.webpackServer = server;
 			// this.isReady = true;
 		});
