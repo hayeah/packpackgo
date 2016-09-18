@@ -34,9 +34,9 @@ export function launchApp(url: string) {
 		mainWindow.loadURL(url);
 
 		if (isDev) {
-			mainWindow.webContents.openDevTools({
-				mode: "detach",
-			});
+			// mainWindow.webContents.openDevTools({
+			// 	mode: "detach",
+			// });
 		}
 
 		installDevtollExtensions();

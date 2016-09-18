@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "quickpack build src/index@node src/launchApp@node -w",
+    "dev": "mkdir -p build && cp index.html build && quickpack build src/index@node src/launchApp@node -w",
     "app": "NODE_ENV=development electron app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
