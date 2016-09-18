@@ -4,7 +4,6 @@ import {
 } from "mobx";
 
 const webpack = require("webpack");
-const WebpackServer = require("webpack-dev-server");
 
 import { Project } from "../models/Project";
 import { configureWebpack } from "./config";

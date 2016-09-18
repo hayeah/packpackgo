@@ -9,6 +9,7 @@ import {
 import * as path from "path";
 
 import { startWebpackServer } from "../packer";
+import { bundleProject } from "../packer/bundle";
 
 const detectPort = require("detect-port");
 
@@ -39,6 +40,12 @@ export class Project {
 	get prettyRoot(): string {
 		const re = new RegExp("^" + process.env.HOME);
 		return this.root.replace(re, "~");
+	}
+
+	bundle() {
+		bundleProject(this, (err: any, stats: IStat) => {
+			this.reportDone(stats);
+		});
 	}
 
 	async start() {

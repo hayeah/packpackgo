@@ -50,7 +50,7 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 	}
 
 	handleBundle = () => {
-
+		this.props.project.bundle();
 	}
 
 	getPreviewURL() {
@@ -118,7 +118,7 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 					}
 
 					{
-						Object.is(status, "success") &&
+						(Object.is(status, "success") || Object.is(status, "stopped")) &&
 						<div className={css.tools__item}>
 							<span className={classNames(css.tools__item__icon, "fa", "fa-gift")} />
 							<a onClick={this.handleBundle}>Bundle</a>

@@ -7,6 +7,7 @@ import {
 
 import { startWebpackServer } from "../packer";
 
+
 export class ProjectStore {
 	@observable port: number;
 	@observable projectRoot: string;

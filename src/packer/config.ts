@@ -8,17 +8,31 @@ import { Project } from "../models/Project";
 
 import { buildConfig } from "quickpack/lib/index";
 
-export async function configureWebpack(project: Project) {
+export async function configureWebpack(project: Project, useProductionBundle = false) {
 	const { root } = project;
 
-	let options = {
-		projectRoot: root,
-		useES6: true,
-		sourceMap: true,
-		sourceMapCheap: true,
-		useProduction: false,
-		output: "./",
-	};
+	let options: any;
+
+	if (useProductionBundle) {
+		options = {
+			projectRoot: root,
+			useES6: false,
+			sourceMap: true,
+			useProduction: true,
+			useUglify: true,
+			output: "bundle",
+		};
+	} else {
+		options = {
+			projectRoot: root,
+			useES6: true,
+			sourceMap: true,
+			sourceMapCheap: true,
+			useProduction: false,
+			output: "./",
+		};
+	}
+
 
 	let config = buildConfig("web", {
 		"index": "index.js",
