@@ -16,10 +16,11 @@ const ASSETS = {
 	logo: require("../assets/logo.png"),
 };
 
-const css = require("./App.less");
-
 import { Project } from "./Project";
 
+import { ErrorsDisplay } from "./ErrorsDisplay";
+
+const css = require("./App.less");
 @observer(["appStore", "uiStore"])
 export class App extends React.Component<{ appStore?: AppStore, uiStore?: UIStore }, {}> {
 	flash(message: string) {
@@ -86,6 +87,12 @@ export class App extends React.Component<{ appStore?: AppStore, uiStore?: UIStor
 						</div>
 					}
 				</ReactCSSTransitionGroup>
+
+				{
+					this.props.uiStore!.failedProject &&
+					<ErrorsDisplay project={this.props.uiStore!.failedProject!}/>
+				}
+
 
 			</div>
 		);

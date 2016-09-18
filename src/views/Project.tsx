@@ -5,6 +5,10 @@ import {
 import * as React from "react";
 
 import {
+	reaction,
+} from "mobx";
+
+import {
 	observer,
 } from "mobx-react";
 
@@ -33,6 +37,26 @@ export class Project extends React.Component<{
 	appStore?: AppStore,
 	project: ProjectData,
 }, {}> {
+
+	componentDidMount() {
+		// TODO dispose reaction
+		// Display or hide error messages automatically
+		reaction(
+			() => this.props.project.errors.length,
+			_ => {
+				const errors = this.props.project.errors;
+				if (errors.length === 0) {
+					// Hide error message automatically if the current project is being displayed
+					if (this.props.uiStore!.failedProject === this.props.project) {
+						this.props.uiStore!.dismissFailedProjectDisplay();
+					}
+				} else {
+					this.props.uiStore!.displayFailedProject(this.props.project);
+				}
+			}
+		);
+	}
+
 	handlePlay = () => {
 		this.props.project.start();
 	}
@@ -66,6 +90,10 @@ export class Project extends React.Component<{
 		}
 
 		shell.openExternal(this.props.project.bundleDirectoryURL);
+	}
+
+	handleShowErrors = () => {
+		this.props.uiStore!.displayFailedProject(this.props.project);
 	}
 
 	getPreviewURL() {
@@ -144,7 +172,7 @@ export class Project extends React.Component<{
 						Object.is(status, "error") &&
 						<div className={css.tools__item}>
 							<span className={classNames(css.tools__item__icon, "fa", "fa-exclamation-triangle")} />
-							<a onClick={this.handleBundle}>Errors ({errors.length})</a>
+							<a onClick={this.handleShowErrors}>Errors ({errors.length})</a>
 						</div>
 					}
 

@@ -24,7 +24,7 @@ export class Project {
 	@observable message: string = "";
 	@observable port: number | null;
 
-	errors: IBuildError[] = [];
+	@observable errors: IBuildError[] = [];
 
 	private webpackServer: any;
 
@@ -119,6 +119,7 @@ export class Project {
 		} else {
 			if (this.webpackServer) {
 				this.status = "success";
+				this.errors = [];
 			} else {
 				this.status = "stopped";
 			}
