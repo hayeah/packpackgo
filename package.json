@@ -1,7 +1,7 @@
 {
-  "name": "webpack-gui",
-  "version": "1.0.0",
-  "description": "",
+  "name": "packpackgo",
+  "version": "0.0.1",
+  "description": "A comforting frontend packager",
   "main": "index.js",
   "scripts": {
     "dev": "mkdir -p build && cp index.html build && quickpack build src/index@node src/launchApp@node -w",
@@ -12,12 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/sikeio/webpack-gui.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "howard yeh",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sikeio/webpack-gui/issues"
+    "url": "https://github.com/hayeah/packpackgo/issues"
   },
-  "homepage": "https://github.com/sikeio/webpack-gui#readme",
+  "homepage": "https://github.com/hayeah/packpackgo/issues",
   "devDependencies": {
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.13.2",
