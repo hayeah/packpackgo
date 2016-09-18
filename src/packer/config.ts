@@ -17,7 +17,8 @@ export async function configureWebpack(project: Project, useProductionBundle = f
 		options = {
 			projectRoot: root,
 			useES6: false,
-			sourceMap: true,
+			usePolyfill: true,
+			sourceMap: false,
 			useProduction: true,
 			useUglify: true,
 			output: "bundle",

@@ -19,12 +19,20 @@ import {
 	AppStore,
 } from "../stores/AppStore";
 
+import {
+	UIStore,
+} from "../stores/UIStore";
+
 const css = require("./Project.less");
 
 const classNames = require("classNames");
 
-@observer(["appStore"])
-export class Project extends React.Component<{ appStore?: AppStore, project: ProjectData }, {}> {
+@observer(["appStore", "uiStore"])
+export class Project extends React.Component<{
+	uiStore?: UIStore,
+	appStore?: AppStore,
+	project: ProjectData,
+}, {}> {
 	handlePlay = () => {
 		this.props.project.start();
 	}
@@ -49,8 +57,15 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 		shell.openExternal(this.getPreviewURL());
 	}
 
-	handleBundle = () => {
-		this.props.project.bundle();
+	handleBundle = async () => {
+		const stat = await this.props.project.bundle();
+		if (stat.hasErrors()) {
+			this.props.uiStore!.setFlashMessage("Project bundling failed");
+		} else {
+			this.props.uiStore!.setFlashMessage("Project bundle was created");
+		}
+
+		shell.openExternal(this.props.project.bundleDirectoryURL);
 	}
 
 	getPreviewURL() {
@@ -72,7 +87,7 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 		} = this.props.project!;
 
 		let primaryAction: any;
-		if (Object.is(status, "success") || Object.is(status, "building") || Object.is(status, "error")) {
+		if (Object.is(status, "success") || Object.is(status, "error")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handleStop}>
 					<span className={classNames(css.action__icon, "fa", "fa-pause")} />

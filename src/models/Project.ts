@@ -9,7 +9,12 @@ import {
 import * as path from "path";
 
 import { startWebpackServer } from "../packer";
+import { IStat, IBuildError } from "../packer/types";
 import { bundleProject } from "../packer/bundle";
+
+import {
+	preloadBabel,
+} from "quickpack/lib/index";
 
 const detectPort = require("detect-port");
 
@@ -42,16 +47,38 @@ export class Project {
 		return this.root.replace(re, "~");
 	}
 
-	bundle() {
-		bundleProject(this, (err: any, stats: IStat) => {
-			this.reportDone(stats);
-		});
+	get bundleDirectoryURL(): string {
+		return `file://${this.root}/bundle`;
 	}
 
-	async start() {
+	get bundleIndexURL(): string {
+		return `file://${this.root}/bundle/index.html`;
+	}
+
+	async bundle(): Promise<IStat> {
+		const previousStatus = this.status;
+		this.status = "building";
+		this.message = "Loading Babel compiler...";
+		await new Promise(resolve => {
+			setImmediate(() => {
+				preloadBabel();
+				resolve();
+			});
+		});
+
+		this.message = "Bundling project";
+		const stats = await bundleProject(this);
+		this.status = previousStatus;
+		return stats;
+	}
+
+	@action async start() {
 		if (this.webpackServer) {
 			return;
 		}
+
+		this.message = "Starting Webpack";
+		this.status = "building";
 
 		const startingPort = 5000;
 		const port = await detectPort(startingPort);
@@ -68,7 +95,7 @@ export class Project {
 		});
 	}
 
-	stop() {
+	@action stop() {
 		if (this.webpackServer) {
 			this.webpackServer.close();
 			this.webpackServer = null;
@@ -78,14 +105,7 @@ export class Project {
 	}
 
 	@action updateProgress(percentage: number, msg: string) {
-		if (percentage === 1) {
-			// TODO error handling??
-			// HY: Does this get call before or after the webpack done callback?
-			// this.status = "success";
-		} else {
-			this.status = "building";
-		}
-
+		this.status = "building";
 		this.progress = percentage;
 		this.message = msg;
 	}
@@ -97,7 +117,12 @@ export class Project {
 		if (stats.hasErrors()) {
 			this.reportErrors(stats);
 		} else {
-			this.status = "success";
+			if (this.webpackServer) {
+				this.status = "success";
+			} else {
+				this.status = "stopped";
+			}
+
 		}
 	}
 
@@ -107,29 +132,3 @@ export class Project {
 	}
 }
 
-interface IStat {
-	hash: string;
-	starTime: number;
-	endTime: number;
-	compilation: ICompilation;
-
-	hasWarnings(): boolean;
-	hasErrors(): boolean;
-}
-
-interface ICompilation {
-	errors: IBuildError[];
-	dependencies: IDependency[];
-}
-
-interface IBuildError {
-	name: string;
-	message: string;
-	details: string;
-}
-
-interface IDependency {
-	module: any;
-	userRequest: string;
-	request: string;
-}
