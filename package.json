@@ -43,6 +43,7 @@
     "webpack-notifier": "^1.3.2"
   },
   "dependencies": {
+    "quickpack": "^0.5.3",
     "animate.css": "^3.5.2",
     "ansi-to-html": "^0.4.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",

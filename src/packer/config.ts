@@ -6,10 +6,28 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 import { Project } from "../models/Project";
 
+import { buildConfig } from "quickpack/lib/index";
+
 export async function configureWebpack(project: Project) {
 	const { root } = project;
 
+	let options = {
+		projectRoot: root,
+		useES6: true,
+		sourceMap: true,
+		sourceMapCheap: true,
+		useProduction: false,
+		output: "./",
+	};
+
+	let config = buildConfig("web", {
+		"index": "index.js",
+	}, options as any);
+
+
+
 	const progressPlugin = new ProgressPlugin(project.updateProgress.bind(project));
+	config.plugins.push(progressPlugin);
 
 	// TODO provide a default template if one is not included in project
 
@@ -22,64 +40,7 @@ export async function configureWebpack(project: Project) {
 		title: project.name,
 		template: htmlTemplate,
 	});
-
-	const config = {
-		entry: {
-			index: path.join(root, "index.js"),
-		},
-
-		output: {
-			path: path.join(root, "build"),
-			filename: "[name].js",
-			publicPath: "/",
-		},
-
-		resolve: {
-			extensions: ["", ".css", ".js", ".jsx", ".json"],
-		},
-
-		module: {
-			loaders: [
-				{
-					test: /\.jsx?$/,
-					loaders: ["babel"],
-					exclude: [/node_modules/],
-				},
-				{
-					test: /\.vue$/,
-					loaders: ["vue"],
-				},
-				{
-					test: /\.json$/,
-					loaders: ["json"],
-				},
-				{
-					test: /\.svg$/,
-					loaders: ["svg-inline"],
-				},
-			],
-		},
-
-		// devtool: "cheap-module-eval-source-map",
-		devtool: "source-map",
-
-		babel: {
-			babelrc: false,
-			plugins: [
-				"transform-es2015-modules-commonjs",
-			],
-			presets: [
-				"es2017",
-				"stage-1",
-				"react",
-			],
-		},
-
-		plugins: [
-			progressPlugin,
-			htmlPlugin,
-		],
-	};
+	config.plugins.push(htmlPlugin);
 
 	return config;
 }
