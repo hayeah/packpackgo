@@ -1,6 +1,9 @@
 import {
 	app,
 	BrowserWindow,
+	clipboard,
+	Menu,
+	MenuItem,
 } from "electron";
 
 import * as path from "path";
@@ -32,6 +35,25 @@ export function launchApp(url: string) {
 		});
 
 		mainWindow.loadURL(url);
+
+		let urlToCopy: string;
+		const menu = new Menu();
+		const menuItem = new MenuItem({
+			label: "Copy URL",
+			click: () => {
+				clipboard.writeText(urlToCopy);
+			},
+		});
+		menu.append(menuItem);
+
+		mainWindow.webContents.on("context-menu", (e, params) => {
+			const { linkURL, linkText, mediaType } = params;
+			// console.log({ linkURL, linkText, mediaType });
+			if (!Object.is(linkURL, "")) {
+				urlToCopy = linkURL;
+				menu.popup(mainWindow);
+			}
+		});
 
 		if (isDev) {
 			// mainWindow.webContents.openDevTools({

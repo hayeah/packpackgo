@@ -43,15 +43,22 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 		shell.openExternal(`file://${root}`);
 	}
 
-	handlePreview = () => {
-		const {
-			port,
-		} = this.props.project!;
-		shell.openExternal(`http://localhost:${port}`);
+	handlePreview = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		e.preventDefault();
+		shell.openExternal(this.getPreviewURL());
 	}
 
 	handleBundle = () => {
 
+	}
+
+	getPreviewURL() {
+		const {
+			port,
+		} = this.props.project!;
+
+		return `http://localhost:${port}`;
 	}
 
 	render() {
@@ -106,7 +113,7 @@ export class Project extends React.Component<{ appStore?: AppStore, project: Pro
 						Object.is(status, "success") &&
 						<div className={css.tools__item}>
 							<span className={classNames(css.tools__item__icon, "fa", "fa-link")} />
-							<a onClick={this.handlePreview}>Preview</a>
+							<a href={this.getPreviewURL()} onClick={this.handlePreview}>Preview</a>
 						</div>
 					}
 

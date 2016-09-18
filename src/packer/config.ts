@@ -19,6 +19,7 @@ export async function configureWebpack(project: Project) {
 	}
 
 	const htmlPlugin = new HtmlWebpackPlugin({
+		title: project.name,
 		template: htmlTemplate,
 	});
 
