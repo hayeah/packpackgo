@@ -49,7 +49,7 @@ export class Project {
 		const startingPort = 5000;
 		const port = await detectPort(startingPort);
 
-		const server = startWebpackServer(this, port, (err: any) => {
+		const server = await startWebpackServer(this, port, (err: any) => {
 			if (err) {
 				console.error(err);
 				return;

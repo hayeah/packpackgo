@@ -9,9 +9,9 @@ const WebpackServer = require("webpack-dev-server");
 import { Project } from "../models/Project";
 import { configureWebpack } from "./config";
 
-export function startWebpackServer(project: Project, port: number, callback: Function) {
+export async function startWebpackServer(project: Project, port: number, callback: Function) {
 	const { root } = project;
-	const config = configureWebpack(project);
+	const config = await configureWebpack(project);
 	const compiler = webpack(config);
 
 	compiler.plugin("done", (stats: any) => {

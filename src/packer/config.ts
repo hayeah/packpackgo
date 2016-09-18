@@ -1,18 +1,25 @@
 import * as path from "path";
+import * as qfs from "q-io/fs";
 
 const ProgressPlugin = require("webpack/lib/ProgressPlugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 import { Project } from "../models/Project";
 
-export function configureWebpack(project: Project) {
+export async function configureWebpack(project: Project) {
 	const { root } = project;
 
 	const progressPlugin = new ProgressPlugin(project.updateProgress.bind(project));
 
 	// TODO provide a default template if one is not included in project
+
+	let htmlTemplate: string = path.join(root, "index.html");
+	if (!await qfs.exists(htmlTemplate)) {
+		htmlTemplate = path.join(__packagedir, "preview-react.html");
+	}
+
 	const htmlPlugin = new HtmlWebpackPlugin({
-		template: path.join(root, "index.html"),
+		template: htmlTemplate,
 	});
 
 	const config = {
