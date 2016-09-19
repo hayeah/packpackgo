@@ -60,6 +60,9 @@ export function launchApp(url: string) {
 			// 	mode: "detach",
 			// });
 		}
+		mainWindow.webContents.openDevTools({
+			mode: "detach",
+		});
 
 		installDevtollExtensions();
 	}
