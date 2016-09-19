@@ -43,8 +43,8 @@ export class Project extends React.Component<{
 		// Display or hide error messages automatically
 		reaction(
 			() => this.props.project.errors,
-			_ => {
-				const errors = this.props.project.errors;
+			errors => {
+				// const errors = this.props.project.errors;
 				if (errors.length === 0) {
 					// Hide error message automatically if the current project is being displayed
 					if (this.props.uiStore!.failedProject === this.props.project) {
