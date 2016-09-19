@@ -9,7 +9,7 @@ import {
 import * as path from "path";
 import * as crypto from "crypto";
 
-import { startWebpackServer } from "../packer";
+import { startWebpackServer, startBrowserSync, IBrowserSync } from "../packer";
 import { IStat, IBuildError, ISource } from "../packer/types";
 import { bundleProject } from "../packer/bundle";
 
@@ -24,10 +24,14 @@ export class Project {
 	@observable progress: number = 0;
 	@observable message: string = "";
 	@observable port: number | null;
+	@observable browserSyncServer: IBrowserSync;
 
 	@observable errors: IBuildError[] = [];
 
-	private webpackServer: any;
+	cssmd5: string;
+	jsmd5: string;
+
+	private webpackWatcher: any;
 
 	constructor(public root: string) {
 	}
@@ -74,33 +78,24 @@ export class Project {
 	}
 
 	@action async start() {
-		if (this.webpackServer) {
+		if (this.webpackWatcher) {
 			return;
 		}
 
 		this.message = "Starting Webpack";
 		this.status = "building";
 
-		const startingPort = 5000;
-		const port = await detectPort(startingPort);
-
-		const server = await startWebpackServer(this, port, (err: any) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-
-			this.port = port;
-			this.webpackServer = server;
-			// this.isReady = true;
-		});
+		setTimeout(async () => {
+			this.webpackWatcher = await startWebpackServer(this);
+		}, 20);
 	}
 
 	@action stop() {
-		if (this.webpackServer) {
-			this.webpackServer.close();
-			this.webpackServer = null;
+		if (this.webpackWatcher) {
+			this.webpackWatcher.close();
+			this.webpackWatcher = null;
 			this.port = null;
+			this.browserSyncServer.exit();
 		}
 		this.status = "stopped";
 	}
@@ -114,12 +109,19 @@ export class Project {
 	/**
 	 * Callback when Webpack finishes building.
 	 */
-	@action reportDone(stats: IStat) {
+	@action async reportDone(stats: IStat) {
 		if (stats.hasErrors()) {
 			this.reportErrors(stats);
 		} else {
 			this.reportAssets(stats);
-			if (this.webpackServer) {
+			if (this.webpackWatcher) {
+				if (this.port == null) {
+					this.message = "Starting live preview server";
+					const [ port, bs ] = await startBrowserSync(this);
+					this.port = port;
+					this.browserSyncServer = bs;
+				}
+
 				this.status = "success";
 				this.errors = [];
 			} else {
@@ -130,12 +132,29 @@ export class Project {
 	}
 
 	@action reportAssets(stats: IStat) {
+		if (this.browserSyncServer == null) {
+			return;
+		}
+
 		const js = stats.compilation.assets["index.js"];
 		const css = stats.compilation.assets["index.css"];
 
-
 		const cssmd5 = md5(css);
 		const jsmd5 = md5(js);
+
+
+		if (!Object.is(cssmd5, this.cssmd5)) {
+			console.log("reload css");
+			this.browserSyncServer.reload("index.css");
+		}
+
+		if (!Object.is(jsmd5, this.jsmd5)) {
+			console.log("reload js");
+			this.browserSyncServer.reload("index.js");
+		}
+
+		this.cssmd5 = cssmd5;
+		this.jsmd5 = jsmd5;
 
 		console.log("cssmd5", cssmd5);
 		console.log("jsmd5", jsmd5);

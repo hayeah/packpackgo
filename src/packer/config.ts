@@ -35,7 +35,7 @@ export async function configureWebpack(project: Project, useProductionBundle = f
 			// sourceMapType: "cheap-module-eval-source-map",
 			// sourceMapCheap: true,
 			useProduction: false,
-			output: "./",
+			output: "build",
 		};
 	}
 

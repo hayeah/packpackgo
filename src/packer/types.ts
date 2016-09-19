@@ -11,6 +11,7 @@ export interface IStat {
 export interface ICompilation {
 	errors: IBuildError[];
 	dependencies: IDependency[];
+	assets: { [key: string]: ISource };
 }
 
 export interface IBuildError {
@@ -24,6 +25,11 @@ export interface IDependency {
 	// module: any;
 	userRequest: string;
 	request: string;
+}
+
+export interface ISource {
+	updateHash(hash: any): void;
+	source(): string;
 }
 
 // export interface IModule {
