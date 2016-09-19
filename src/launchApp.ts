@@ -24,6 +24,10 @@ export function launchApp(url: string) {
 	});
 
 	function launch() {
+		if (mainWindow != null) {
+			return;
+		}
+
 		mainWindow = new BrowserWindow({
 			width: 460,
 			height: 720,
@@ -55,42 +59,67 @@ export function launchApp(url: string) {
 			}
 		});
 
-		if (isDev) {
-			// mainWindow.webContents.openDevTools({
-			// 	mode: "detach",
-			// });
-		}
-		mainWindow.webContents.openDevTools({
-			mode: "detach",
-		});
+		const appMenuTemplate: any[] = [
+			{
+				label: "Debug",
+				submenu: [
+					{
+						label: "Developer Tools",
+						click() {
+							mainWindow.webContents.openDevTools({
+								mode: "detach",
+							});
+						},
+					},
+				],
+			},
+		];
 
-		installDevtollExtensions();
+		if (process.platform === "darwin") {
+			appMenuTemplate.unshift({
+				label: "App",
+				// submenu: [
+				// 	{
+				// 		label: "Quit",
+				// 		accelerator: "Command+Q",
+				// 		click(item: any, focusedWindow: any) {
+				// 			if (focusedWindow) {
+				// 				focusedWindow.webContents.send("close-and-exit");
+				// 			} else {
+				// 				app.exit(0);
+				// 			}
+				// 		},
+				// 	},
+				// ],
+			});
+		}
+
+
+		const appMenu = Menu.buildFromTemplate(appMenuTemplate);
+		Menu.setApplicationMenu(appMenu);
+
+		if (isDev) {
+			installDevtoolExtensions();
+		}
 	}
 }
 
 
-
-
-
-
-async function installDevtollExtensions() {
+async function installDevtoolExtensions() {
 	// https://www.npmjs.com/package/electron-devtools-installer
-	if (isDev) {
-		// REACT_DEVELOPER_TOOLS
+	const installExtension = require("electron-devtools-installer").default;
+	const {
+		// VUEJS_DEVTOOLS,
+		REACT_DEVELOPER_TOOLS,
+		// REACT_PERF,
+		// REDUX_DEVTOOLS,
+	} = require("electron-devtools-installer");
 
-		const installExtension = require("electron-devtools-installer").default;
-		const {
-			// VUEJS_DEVTOOLS,
-			REACT_DEVELOPER_TOOLS,
-			// REACT_PERF,
-			// REDUX_DEVTOOLS,
-		} = require("electron-devtools-installer");
-
-		try {
-			await installExtension(REACT_DEVELOPER_TOOLS);
-			console.log("Devtoll Extensions Installed");
-		} catch (error) {
-			console.log("Error occurred when installing devtool:", error);
-		}
+	try {
+		await installExtension(REACT_DEVELOPER_TOOLS);
+		console.log("Devtoll Extensions Installed");
+	} catch (error) {
+		console.log("Error occurred when installing devtool:", error);
 	}
+
 }
