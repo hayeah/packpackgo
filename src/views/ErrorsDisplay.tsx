@@ -21,9 +21,12 @@ function Error(props: { error: IBuildError }) {
 	const error = props.error;
 	return (
 		<div className={css.error}>
-			<div className={css.error__module}>
-				{error.module.userRequest}
-			</div>
+			{
+				error.module &&
+				<div className={css.error__module}>
+					{error.module.userRequest}
+				</div>
+			}
 
 			<div className={css.error__name}>
 				{error.name}
