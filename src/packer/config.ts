@@ -28,7 +28,12 @@ export async function configureWebpack(project: Project, useProductionBundle = f
 			projectRoot: root,
 			useES6: true,
 			sourceMap: true,
-			sourceMapCheap: true,
+			// 1. source-map is slow to generate
+			// 2. eval is fast to generate, but makes Chrome debugger very slow
+			// 3. can't set breakpoint with cheap-module-eval-source-map.
+			sourceMapType: "source-map",
+			// sourceMapType: "cheap-module-eval-source-map",
+			// sourceMapCheap: true,
 			useProduction: false,
 			output: "./",
 		};
