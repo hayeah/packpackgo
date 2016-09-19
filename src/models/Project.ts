@@ -7,9 +7,10 @@ import {
 } from "mobx";
 
 import * as path from "path";
+import * as crypto from "crypto";
 
 import { startWebpackServer } from "../packer";
-import { IStat, IBuildError } from "../packer/types";
+import { IStat, IBuildError, ISource } from "../packer/types";
 import { bundleProject } from "../packer/bundle";
 
 import {
@@ -117,6 +118,7 @@ export class Project {
 		if (stats.hasErrors()) {
 			this.reportErrors(stats);
 		} else {
+			this.reportAssets(stats);
 			if (this.webpackServer) {
 				this.status = "success";
 				this.errors = [];
@@ -127,9 +129,27 @@ export class Project {
 		}
 	}
 
+	@action reportAssets(stats: IStat) {
+		const js = stats.compilation.assets["index.js"];
+		const css = stats.compilation.assets["index.css"];
+
+
+		const cssmd5 = md5(css);
+		const jsmd5 = md5(js);
+
+		console.log("cssmd5", cssmd5);
+		console.log("jsmd5", jsmd5);
+	}
+
 	@action reportErrors(stats: IStat) {
 		this.status = "error";
 		this.errors = stats.compilation.errors;
 	}
 }
 
+function md5(source: ISource): string {
+	const hash = crypto.createHash("md5");
+	hash.update(source.source());
+	// source.updateHash(hash);
+	return hash.digest("hex");
+}
