@@ -1,7 +1,6 @@
 import {
 	observable,
 	transaction,
-	reaction,
 	action,
 	computed,
 } from "mobx";
