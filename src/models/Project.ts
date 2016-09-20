@@ -25,7 +25,7 @@ export class Project {
 	@observable port: number | null;
 
 	// For some reason the "exit" method becomes undefined if this property is an observable.
-	private browserSyncServer: IBrowserSync;
+	private browserSyncServer: IBrowserSync | null;
 
 	@observable errors: IBuildError[] = [];
 
@@ -96,7 +96,8 @@ export class Project {
 			this.webpackWatcher.close();
 			this.webpackWatcher = null;
 			this.port = null;
-			this.browserSyncServer.exit();
+			this.browserSyncServer && this.browserSyncServer.exit();
+			this.browserSyncServer = null;
 		}
 		this.status = "stopped";
 	}
