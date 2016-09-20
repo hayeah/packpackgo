@@ -77,20 +77,16 @@ export function launchApp(url: string) {
 
 		if (process.platform === "darwin") {
 			appMenuTemplate.unshift({
-				label: "App",
-				// submenu: [
-				// 	{
-				// 		label: "Quit",
-				// 		accelerator: "Command+Q",
-				// 		click(item: any, focusedWindow: any) {
-				// 			if (focusedWindow) {
-				// 				focusedWindow.webContents.send("close-and-exit");
-				// 			} else {
-				// 				app.exit(0);
-				// 			}
-				// 		},
-				// 	},
-				// ],
+				label: "PackPackGo",
+				submenu: [
+					{
+						label: "Quit",
+						accelerator: "Command+Q",
+						click(item: any, focusedWindow: any) {
+							app.exit(0);
+						},
+					},
+				],
 			});
 		}
 
