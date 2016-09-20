@@ -32,20 +32,22 @@ export class App extends React.Component<{ appStore?: AppStore, uiStore?: UIStor
 		e.stopPropagation();
 
 		const files = e.dataTransfer.files;
-		if (files.length !== 1) {
-			this.flash("Please drop a single project folder");
-			return;
-		}
-
-		const projectRoot = files[0].path;
-
-		try {
-			await this.props.appStore!.addProject(projectRoot);
-		} catch (error) {
-			this.flash(error.message);
-		}
+		this.addFilesAsProjects(files);
 
 		return false;
+	}
+
+	async addFilesAsProjects(files: FileList) {
+		for (let i = 0; i < files.length; i++) {
+			const projectRoot = files[i].path;
+
+			try {
+				await this.props.appStore!.addProject(projectRoot);
+			} catch (error) {
+				this.flash(error.message);
+				break;
+			}
+		}
 	}
 
 	render() {
