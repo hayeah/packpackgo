@@ -123,23 +123,25 @@ export class Project extends React.Component<{
 		if (Object.is(status, "success") || Object.is(status, "error")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handleStop}>
-					<span className={classNames(css.action__icon, "fa", "fa-pause")} />
+					<div className={classNames(css.action__icon, "fa", "fa-pause")} />
 				</a>
 			);
 		} else if (Object.is(status, "stopped")) {
 			primaryAction = (
 				<a className={css.action} onClick={this.handlePlay}>
-					<span className={classNames(css.action__icon, "fa", "fa-play")} />
+					<div className={classNames(css.action__icon, "fa", "fa-play")} />
 				</a>
 			);
 		}
 
 		return (
 			<div className={classNames(css.root, css[`root--${status}`])}>
-				<a onClick={this.handleOpenProject}>
-					<span className={css.timeAgo}> {prettyRoot} </span>
-				</a>
-				<h1 className={css.title}> {name} </h1>
+				<div className={css.timeAgo}> {prettyRoot} </div>
+				<div className={css.title}>
+					<a className={css.title__link} onClick={this.handleOpenProject}>
+						{name} <i className={`fa fa-folder-open ${css.title__icon} `}/>
+					</a>
+				</div>
 
 				<div className={css.tools}>
 					{

@@ -19,11 +19,40 @@
 	}
 
 	.title {
+		flex-direction: row;
+		align-items: center;
 		font-weight: 400;
 		font-size: 24px;
+
+		// &:hover .title__icon {
+		// 	display: flex;
+		// }
+	}
+
+	.title__link {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		cursor: pointer;
+
+		&:hover {
+			color: darken( #565656, 40%);
+
+			.title__icon {
+				opacity: 1;
+			}
+		}
+	}
+
+	.title__icon {
+		opacity: 0;
+		// display: hidden;
+		font-size: 12px;
+		margin-left: 8px;
 	}
 
 	.action {
+		display: flex;
 		position: absolute;
 
 		right: 0;

@@ -7,7 +7,7 @@ html {
 	color: #565656;
 }
 
-div, span, a, h1, h2, h3 {
+div, h1, h2, h3 {
   box-sizing: border-box;
   position: relative;
 
@@ -21,10 +21,4 @@ div, span, a, h1, h2, h3 {
   margin: 0;
   padding: 0;
   min-width: 0;
-}
-
-.drop-zone {
-	border: 1px solid red;
-	width: 300px;
-	height: 300px;
 }
