@@ -1,5 +1,5 @@
-const React = require("react");
-const { render } = require("react-dom");
+import * as React from "react";
+import { render } from "react-dom";
 
 const css = require("index.less");
 
