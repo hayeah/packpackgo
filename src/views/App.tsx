@@ -67,9 +67,14 @@ export class App extends React.Component<{ appStore?: AppStore, uiStore?: UIStor
 					<h1 className={css.header__title}> PackPackGo </h1>
 				</div>
 
-				<DropZone />
+				{
+					projects.length < 2 &&
+					<DropZone />
+				}
 
-				{projects.map(project => <Project key={project.root} project={project} />)}
+				<div className={css.projects}>
+					{projects.map(project => <Project key={project.root} project={project} />)}
+				</div>
 
 				<ReactCSSTransitionGroup
 					className={css.notice}
