@@ -39,7 +39,7 @@ export async function startBrowserSync(project: Project): Promise<[number, IBrow
 	return new Promise<[number, IBrowserSync]>((resolve, reject) => {
 		bs.init({
 			ui: false,
-			server: project.root + "/build",
+			server: [project.root + "/build", project.root],
 			port: port,
 		}, (err: any) => {
 			if (err) {
