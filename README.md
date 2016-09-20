@@ -1,12 +1,10 @@
 # PackPackGo
 
-Building a JavaScript project should be easy. We want to spend our weekends building stuff, not configuring Webpack. PackPackGo is a Webpack GUI that makes building your JavaScript project as easy as playing mp3.
+PackPackGo is a Webpack GUI that makes building your JavaScript project as easy as playing mp3.
 
-Simply drop your project into PackPackGo, and click play. The yellow ducky will build your project.
+Drop your project into PackPackGo, and click play. You project will build, and the browser will automatically refresh whenever you make new changes. You don't need to configure anything.
 
-Refresh your browser automatically whenever you make new changes.
-
-When you are done, click "bundle", and the yellow ducky will give you a minified, transpiled, polyfilled bundle.
+When you are done, click "bundle" for production release. You'll get a minified, transpiled, polyfilled bundle.
 
 Pack it, and go!
 
