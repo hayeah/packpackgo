@@ -24,7 +24,9 @@ export class Project {
 	@observable progress: number = 0;
 	@observable message: string = "";
 	@observable port: number | null;
-	@observable browserSyncServer: IBrowserSync;
+
+	// For some reason the "exit" method becomes undefined if this property is an observable.
+	private browserSyncServer: IBrowserSync;
 
 	@observable errors: IBuildError[] = [];
 
