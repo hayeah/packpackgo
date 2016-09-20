@@ -36,12 +36,21 @@ export class AppStore {
 			throw new Error("Project must be a folder");
 		}
 
-		if (!await qfs.isFile(path.join(root, "index.js"))) {
-			throw new Error("Cannot find index.js in project folder");
-		}
-
 		if (this.hasProject(root)) {
 			throw new Error("Project already exists");
+		}
+
+		const extensions = ["js", "jsx", "ts", "tsx"];
+		let indexFile: string | null = null;
+		for (let ext of extensions) {
+			if (await qfs.isFile(path.join(root, `index.${ext}`))) {
+				indexFile = `index.${ext}`;
+				break;
+			}
+		}
+
+		if (indexFile == null) {
+			throw new Error("Cannot find index.js or index.ts in project folder");
 		}
 	}
 

@@ -41,7 +41,8 @@ export async function configureWebpack(project: Project, useProductionBundle = f
 
 
 	let config = buildConfig("web", {
-		"index": "index.js",
+		// would match .js, .jsx, .ts, .tsx
+		"index": "index",
 	}, options as any);
 
 	// Webpack a lookup by recursively look up node_modules, but this works only for the project's context.
