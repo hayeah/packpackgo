@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "sourceMap": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true
+
+    // "listFiles": true
+
+
+    /* should use linter... */
+    // "allowUnreachableCode": false,
+    // "noImplicitThis": true,
+    // "noImplicitReturns": true
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true
+  },
+
+  "include": [
+    "src/**/*",
+    "index.tsx",
+    "typings/**/*"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}
