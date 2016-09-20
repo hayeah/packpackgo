@@ -31,7 +31,17 @@ export class AppStore {
 		);
 	}
 
-	async verifyNewProject(root: string) {
+	async verifyNewProject(root: string): Promise<string> {
+		const file = path.basename(root);
+		if (file.match(/^index\.(jsx?|tsx?)/)) {
+			if (await qfs.isFile(file)) {
+				root = path.dirname(root);
+				return root;
+			} else {
+				throw new Error("index.js is not a file");
+			}
+		}
+
 		if (!await qfs.isDirectory(root)) {
 			throw new Error("Project must be a folder");
 		}
@@ -52,6 +62,8 @@ export class AppStore {
 		if (indexFile == null) {
 			throw new Error("Cannot find index.js or index.ts in project folder");
 		}
+
+		return root;
 	}
 
 	hasProject(root: string): boolean {
@@ -59,7 +71,7 @@ export class AppStore {
 	}
 
 	async addProject(root: string) {
-		await this.verifyNewProject(root);
+		root = await this.verifyNewProject(root);
 		this.projects.push(new Project(root));
 	}
 

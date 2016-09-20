@@ -29,7 +29,7 @@ window.addEventListener("load", () => {
 There is nothing to configure or install.
 
 + See: [React Example](examples/react)
-+ See: [TypeScript Example](examples/react)
++ See: [TypeScript Example](examples/typescript-react)
 
 # Features
 
