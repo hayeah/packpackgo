@@ -38,10 +38,12 @@ export class Project extends React.Component<{
 	project: ProjectData,
 }, {}> {
 
+	private reactionToErrorsDisposer: Function;
+
 	componentDidMount() {
 		// TODO dispose reaction
 		// Display or hide error messages automatically
-		reaction(
+		this.reactionToErrorsDisposer = reaction(
 			() => this.props.project.errors,
 			errors => {
 				// const errors = this.props.project.errors;
@@ -55,6 +57,10 @@ export class Project extends React.Component<{
 				}
 			}
 		);
+	}
+
+	componentWillUnmount() {
+		this.reactionToErrorsDisposer();
 	}
 
 	handlePlay = () => {
