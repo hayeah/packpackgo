@@ -95,6 +95,8 @@ export async function startBrowserSync(project: Project): Promise<[number, IBrow
 
 export interface IBrowserSync {
 	exit(): void;
+	reload(): void;
+	reload(file: string): void;
 }
 
 // function watchProject(config: any) {
