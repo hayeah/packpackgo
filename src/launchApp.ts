@@ -65,10 +65,18 @@ export function launchApp(url: string) {
 				submenu: [
 					{
 						label: "Developer Tools",
+						accelerator: "Command+Option+I",
 						click() {
 							mainWindow.webContents.openDevTools({
 								mode: "detach",
 							});
+						},
+					},
+					{
+						label: "Reload",
+						accelerator: "Command+R",
+						click() {
+							mainWindow.reload();
 						},
 					},
 				],
@@ -89,6 +97,8 @@ export function launchApp(url: string) {
 				],
 			});
 		}
+
+
 
 
 		const appMenu = Menu.buildFromTemplate(appMenuTemplate);
